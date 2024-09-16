@@ -2,6 +2,7 @@
 de 1 a 5. Atrás de cada porta há um desafio. Crie um programa que receba o número da porta
 escolhido pelo aventureiro e use match-case para mostrar qual desafio ele enfrentará.'''
 import random
+import sys
 
 def cave(door):
     print("Status")
@@ -132,13 +133,12 @@ def cave(door):
                         print(f'You got the goblin {i+1}')
                     else:
                         print("You were overwhelmed by the goblins")
-                        break
+                        print('Game over.')
+                        sys.exit()
                 # Check if all goblins were defeated
                 if i + 1 == goblins:
                     print('You were able to defeat all of them!')
                     print('You survived the cave with the gold..... this time')
-                else:
-                    print('Game over.')
 
 
             else:
