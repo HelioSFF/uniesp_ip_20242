@@ -15,4 +15,11 @@ if __name__ == '__main__':
         durabilidade_arma = int(input('Digite a durabilidade da arma: '))
 
         resultado_validacao = validar_arma(ataque_arma,durabilidade_arma, nome_arma)
+
+
+        if resultado_validacao != 'error':
+            print(f'A sua arma {resultado_validacao}, foi validada!!!')
+        else:
+            print('Essa arma não funciona')
         
+        controle_opcao = int(input(f'Digite /n 0 para continuar e /n -1 para finalizar'))
