@@ -3,18 +3,18 @@ lidos em um vetor. Após isto, o algoritmo deve permitir a leitura de mais 1 nom
 depois escrever a mensagem ACHEI, se o nome estiver entre os 5 nomes lidos anteriormente
 (guardados no vetor), ou NÃO ACHEI caso contrário.'''
 
-lista = []
+
 def add_list():
+    lista = []
     for i in range(5):
         clube = input('Digite um novo clube: ')
-        clube.upper()
+        clube = clube.upper()
         lista.append(clube)
-    
-    search = input('Digite seu clube do coração: ')
-    search.upper()
+    busca = input('Digite seu clube do coração: ')
+    busca = busca.upper()
     find = False
-    for clube in lista:
-        if clube == search:
+    for clube in range(len(lista)):
+        if lista[clube] == busca:
             find = True
     if find == True:
         print('Achei!')
