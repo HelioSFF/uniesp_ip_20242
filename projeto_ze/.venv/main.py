@@ -4,19 +4,14 @@ import time
 
 
 URL = 'https://api.adviceslip.com/advice'
+ad_list = {}
 
-def count_ad():
+def ad_api():
     try:
-        qad = int(input('Digite quantos conselhos gostaria de receber: '))
         result = re.get(URL)
-        for i in range(qad):
-            id = result.json()['slip']['id']
-            ad = result.json()['slip']['advice']
-            print(f'Id: {result.json()['slip']['id']} - {result.json()['slip']['advice']}')
-            with open('advice.txt', 'a', encoding='UTF-8') as arquivo:
-                arquivo.write(f'{id} - {ad} \n')
-            result = re.get(URL)
-            sleep(1)
+        id_ad = result.json()['slip']['id']
+        ad_txt = result.json()['slip']['advice']
+        return id_ad ,ad_txt
 
     except TypeError as e:
         print(f'Dado invalido: {e}')
@@ -25,15 +20,42 @@ def count_ad():
         print(f'Error {e}')
 
 
+
+def list_ad(id_ad, ad_txt):
+    try:
+        if id_ad not in ad_list:
+            ad_list[id_ad] = ad_txt
+            print("Conselho salvo com sucesso!")
+        else:
+            print("Conselho já salvo.")
+
+    except Exception as erro:
+        print(f'Erro encontrado: {erro}')
+
+
+
 def show_ad():
+    if ad_list:
+        print("Conselhos salvos:")
+        for id_ad, ad_txt in (ad_list.items()):
+            print(f"ID: {id_ad} - Conselho: {ad_txt}")
+    else:
+        print("Nenhum conselho salvo. \n")
+
+def save_txt():
+    with open('advice.txt', 'a', encoding='UTF-8') as arquivo:
+        for id_ad, ad_txt in (ad_list.items()):
+            arquivo.write(f"ID: {id_ad} - Conselho: {ad_txt} \n")
+
+def show_ad_from_txt():
     with open('advice.txt', 'r+', encoding='UTF-8') as arquivo:
-        shad = arquivo.readlines()
-        for i in shad:
+        lines = arquivo.readlines()
+        for i in lines:
             print(f'{i.strip()}')
             time.sleep(1)
 
 
-def translate_ad():
+def translate_ad_from_txt():
     with open('advice.txt', 'r+', encoding='UTF-8') as arquivo:
         shad = arquivo.readlines()
         for i in shad:
@@ -43,28 +65,64 @@ def translate_ad():
             time.sleep(1)
 
 
+
+def translate_ad():
+    try:
+        traduzido = GoogleTranslator(source='en', target='pt').translate(ad_txt)
+        return traduzido
+    except Exception as e:
+        print("Erro ao traduzir:", e)
+        return None
+
+
+
 if __name__ == '__main__':
 
-    op = 1
+    while True:
+        print("\nMenu:")
+        print("1. Buscar conselho")
+        print("2. Mostrar conselhos salvos")
+        print("3. Traduzir conselho salvo")
+        print("4. Salvar conselhos em arquivo de texto")
+        print("5. Sair")
+        opcao = input("Escolha uma opção: ")
 
-    while op != 0:
-        print('1 - Pedir conselhos')
-        print('2 - Mostrar conselhos')
-        print('3 - Traduzir os conselhos para português')
-        try:
-            menu = int(input('Bem vindo ao programa de conselhos! \n Digite numero correspondente a opção desejada:   '))
-            if menu == 1:
-                count_ad()
-                op = int(input('Digite 0 para finalizar o programa \n ou outro numero para continuar :'))
-            elif menu == 2:
+        if opcao == "1":
+            id_ad, ad_txt = ad_api()
+            if id_ad and ad_txt:
+                qtd = int(input('Quantos conselhos deseja receber? :  '))
+                for i in range(qtd):
+                    print(f"Conselho recebido: {ad_txt}")
+                    salvar = input("Deseja salvar esse conselho? (s/n): \n").lower()
+                    if salvar == "s":
+                        list_ad(id_ad, ad_txt)
+                    id_ad, ad_txt = ad_api()
+
+
+
+        elif opcao == "2":
+            escolha = int(input("Gostaria que seja mostrado os conselhos quem estão: \n 1- no Programa  \n 2- no Arquivo de texto? \n"))
+            if escolha == 1:
                 show_ad()
-                op = int(input('Digite 0 para finalizar o programa \n ou outro numero para continuar :'))
-            elif menu == 3:
-                translate_ad()
-                op = int(input('Digite 0 para finalizar o programa \n ou outro numero para continuar :'))
+            elif escolha == 2:
+                show_ad_from_txt()
+            else:
+                print("Numero invalido!")
 
-        except TypeError as error:
-            print(f'Error! Tipo de dado errado')
 
-        except Exception as error:
-            print(f'Erro - {error}')
+
+        elif opcao == "3":
+            show_ad()
+            print('\n ~~~~~~~~~~~~ traduzido ~~~~~~~~~~ \n')
+            translate_ad()
+
+
+        elif opcao == "4":
+            save_txt()
+            print('Conselhos salvos com sucesso no arquivo "advices.txt" !')
+
+        elif opcao == "5":
+            print("Saindo do programa.")
+            break
+        else:
+            print("Opção inválida!")
