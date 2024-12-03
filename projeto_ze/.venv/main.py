@@ -13,8 +13,6 @@ def ad_api():
         ad_txt = result.json()['slip']['advice']
         return id_ad ,ad_txt
 
-    except TypeError as e:
-        print(f'Dado invalido: {e}')
 
     except Exception as e:
         print(f'Error {e}')
@@ -68,8 +66,9 @@ def translate_ad_from_txt():
 
 def translate_ad():
     try:
-        traduzido = GoogleTranslator(source='en', target='pt').translate(ad_txt)
-        return traduzido
+        for id_ad, ad_txt in (ad_list.items()):
+            traduzido = GoogleTranslator(source='en', target='pt').translate(ad_txt)
+            print(f'Tradução:  Id: {id_ad} - {traduzido}')
     except Exception as e:
         print("Erro ao traduzir:", e)
         return None
@@ -112,9 +111,15 @@ if __name__ == '__main__':
 
 
         elif opcao == "3":
-            show_ad()
-            print('\n ~~~~~~~~~~~~ traduzido ~~~~~~~~~~ \n')
-            translate_ad()
+            op = int(input('Gostaria traduzir os conselhos da onde? : \n 1- no Programa  \n 2- no Arquivo de texto? \n'))
+            if op == 1:
+                show_ad()
+                print('\n ~~~~~~~~~~~~ traduzido ~~~~~~~~~~ \n')
+                translate_ad()
+            elif op == 2:
+                translate_ad_from_txt()
+            else:
+                print('Escolha inválida')
 
 
         elif opcao == "4":
